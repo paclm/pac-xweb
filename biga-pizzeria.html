@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BIGA — Pizzeria Napolitaine · Capbreton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#F7F0E3;--parchment:#EDE3CC;--charcoal:#1C1814;
+  --terra:#C2452A;--terra-light:#E05A3A;--terra-pale:#F0A080;
+  --olive:#3D4A30;--smoke:#6B5E52;--warm-white:#FBF8F3;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--charcoal);color:var(--cream);font-family:'DM Sans',sans-serif;overflow-x:hidden}
+
+/* DEMO BANNER */
+.demo-banner{
+  position:fixed;top:0;left:0;right:0;z-index:9999;
+  background:var(--terra);color:#fff;text-align:center;
+  font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;padding:8px 16px;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:32px;left:0;right:0;z-index:900;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 52px;transition:background .35s,padding .35s;
+}
+nav.scrolled{
+  background:rgba(28,24,20,.92);backdrop-filter:blur(16px);
+  padding:14px 52px;border-bottom:1px solid rgba(247,240,227,.07);
+}
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.55rem;
+  letter-spacing:.12em;color:var(--cream);text-decoration:none;
+}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{
+  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--cream);text-decoration:none;opacity:.7;transition:opacity .2s;
+}
+.nav-links a:hover{opacity:1}
+.nav-cta{
+  font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  background:var(--terra);color:#fff;padding:10px 24px;
+  border-radius:999px;text-decoration:none;
+  transition:background .25s,transform .2s;
+}
+.nav-cta:hover{background:var(--terra-light);transform:translateY(-1px)}
+
+/* ══ SCROLL EXPANSION HERO ══ */
+#hero-wrapper{
+  position:relative;width:100%;height:100dvh;
+  overflow:hidden;background:var(--charcoal);
+}
+#hero-bg{
+  position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 60% at 65% 40%,rgba(194,69,42,.22) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 70% at 20% 75%,rgba(61,74,48,.28) 0%,transparent 55%),
+    linear-gradient(155deg,#1C1814 0%,#26190F 50%,#180E08 100%);
+  transition:opacity .1s linear;
+}
+#hero-bg::after{
+  content:'';position:absolute;inset:0;mix-blend-mode:overlay;opacity:.45;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* Expanding image */
+#hero-media{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:3;border-radius:20px;overflow:hidden;
+  box-shadow:0 24px 80px rgba(0,0,0,.55);
+  will-change:width,height;
+}
+#hero-media img{width:100%;height:100%;object-fit:cover;display:block;user-select:none}
+#hero-media-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.42);pointer-events:none;
+}
+
+/* Title */
+#hero-title{
+  position:absolute;inset:0;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.title-big{
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(86px,13vw,158px);line-height:.88;color:var(--cream);
+  display:block;will-change:transform;
+}
+.title-sub{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+  font-size:clamp(15px,2vw,26px);color:rgba(247,240,227,.48);
+  letter-spacing:.07em;margin-top:10px;display:block;will-change:opacity;
+}
+
+/* Scroll hint */
+.scroll-hint{
+  position:absolute;bottom:52px;left:50%;transform:translateX(-50%);
+  z-index:6;display:flex;flex-direction:column;align-items:center;gap:8px;
+  pointer-events:none;
+}
+.scroll-hint-line{
+  width:1px;height:44px;
+  background:linear-gradient(to bottom,rgba(247,240,227,.4),transparent);
+  animation:pulse 1.8s ease-in-out infinite;
+}
+.scroll-hint-txt{
+  font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;
+  color:rgba(247,240,227,.38);
+}
+@keyframes pulse{
+  0%{transform:scaleY(0);transform-origin:top;opacity:1}
+  50%{transform:scaleY(1);transform-origin:top}
+  51%{transform:scaleY(1);transform-origin:bottom}
+  100%{transform:scaleY(0);transform-origin:bottom;opacity:0}
+}
+
+/* Info chips */
+#hero-info{
+  position:absolute;bottom:48px;left:52px;right:52px;z-index:6;
+  display:flex;gap:36px;flex-wrap:wrap;
+  will-change:opacity,transform;
+}
+.chip-lbl{font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--terra-pale);margin-bottom:3px}
+.chip-val{font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--cream)}
+.chip-val a{color:inherit;text-decoration:none;transition:color .2s}
+.chip-val a:hover{color:var(--terra-pale)}
+
+/* PAGE CONTENT */
+#page-content{opacity:0;transition:opacity .65s;pointer-events:none}
+#page-content.visible{opacity:1;pointer-events:all}
+
+/* ABOUT */
+.about{
+  background:var(--warm-white);color:var(--charcoal);
+  padding:100px 52px;display:grid;
+  grid-template-columns:1fr 1.5fr;gap:72px;align-items:center;
+  position:relative;overflow:hidden;
+}
+.about::before{
+  content:'BIGA';position:absolute;right:-20px;top:50%;
+  transform:translateY(-50%);
+  font-family:'Cormorant Garamond',serif;font-size:20vw;font-weight:300;
+  color:rgba(28,24,20,.04);pointer-events:none;white-space:nowrap;line-height:1;
+}
+.sec-label{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--terra);margin-bottom:14px}
+.about-heading{
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(30px,4vw,52px);line-height:1.12;color:var(--charcoal);
+}
+.about-heading em{font-style:italic;color:var(--terra)}
+.about-text{font-size:.93rem;line-height:1.9;color:#3A342C;margin-bottom:18px}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.badge{
+  font-size:.67rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:8px 18px;border-radius:999px;
+  border:1px solid rgba(194,69,42,.28);color:var(--terra);background:rgba(194,69,42,.05);
+}
+
+/* GALLERY */
+.gallery{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  grid-template-rows:330px 220px;gap:3px;background:var(--charcoal);
+}
+.gallery-item{overflow:hidden;position:relative;background:#111}
+.gallery-item:first-child{grid-row:1/3}
+.gallery-item img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .7s ease;
+}
+.gallery-item:hover img{transform:scale(1.05)}
+.g-label{
+  position:absolute;bottom:14px;left:14px;
+  font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(247,240,227,.65);background:rgba(20,15,10,.52);
+  padding:5px 12px;border-radius:999px;backdrop-filter:blur(6px);
+}
+
+/* MENU */
+.menu{padding:96px 52px;background:var(--charcoal)}
+.sec-head{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-bottom:48px;padding-bottom:22px;
+  border-bottom:1px solid rgba(247,240,227,.07);
+}
+.sec-title{
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(28px,4vw,50px);color:var(--cream);
+}
+.sec-link{
+  font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--terra-light);text-decoration:none;
+  display:flex;align-items:center;gap:8px;transition:gap .25s;
+}
+.sec-link::after{content:'→'}
+.sec-link:hover{gap:14px}
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.menu-card{
+  background:rgba(247,240,227,.03);border:1px solid rgba(247,240,227,.07);
+  border-radius:16px;padding:34px 28px;
+  position:relative;overflow:hidden;
+  transition:background .3s,border-color .3s,transform .25s;
+}
+.menu-card:hover{
+  background:rgba(194,69,42,.07);border-color:rgba(194,69,42,.25);transform:translateY(-3px);
+}
+.menu-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--terra);transform:scaleX(0);transform-origin:left;
+  transition:transform .35s;border-radius:0 0 16px 16px;
+}
+.menu-card:hover::after{transform:scaleX(1)}
+.m-icon{font-size:1.7rem;margin-bottom:14px;display:block}
+.m-name{font-family:'Cormorant Garamond',serif;font-size:1.28rem;color:var(--cream);margin-bottom:5px}
+.m-tag{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terra-light);margin-bottom:10px}
+.m-desc{font-size:.84rem;line-height:1.75;color:var(--smoke)}
+
+/* VISIT */
+.visit{
+  background:var(--parchment);color:var(--charcoal);
+  padding:96px 52px;display:grid;grid-template-columns:1fr 1.1fr;gap:80px;align-items:start;
+}
+.visit-heading{
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(32px,5vw,58px);line-height:1.08;color:var(--charcoal);margin-bottom:36px;
+}
+.visit-heading em{font-style:italic;color:var(--terra)}
+.info-list{list-style:none}
+.info-row{
+  display:flex;gap:18px;align-items:flex-start;
+  padding:20px 0;border-bottom:1px solid rgba(28,24,20,.1);
+}
+.info-row:last-child{border-bottom:none}
+.i-icon{
+  width:36px;height:36px;flex-shrink:0;
+  border:1px solid rgba(28,24,20,.15);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.88rem;margin-top:2px;
+}
+.i-lbl{font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--terra);margin-bottom:3px}
+.i-val{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--charcoal)}
+.i-val a{color:inherit;text-decoration:none;transition:color .2s}
+.i-val a:hover{color:var(--terra)}
+.visit-map{width:100%;aspect-ratio:4/3;border:0;border-radius:16px;filter:sepia(8%) contrast(1.06)}
+
+/* CTA BAND */
+.cta-band{
+  background:var(--terra);padding:72px 52px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:28px;
+}
+.cta-heading{
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(26px,4vw,48px);color:#fff;line-height:1.1;
+}
+.cta-heading em{font-style:italic;opacity:.72}
+.cta-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-w{
+  font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500;
+  background:#fff;color:var(--terra);padding:13px 30px;border-radius:999px;
+  text-decoration:none;transition:transform .2s,box-shadow .2s;
+}
+.btn-w:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.btn-o{
+  font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  background:transparent;color:#fff;padding:13px 30px;border-radius:999px;
+  text-decoration:none;border:1px solid rgba(255,255,255,.45);transition:border-color .2s,background .2s;
+}
+.btn-o:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+
+/* FOOTER */
+footer{
+  background:#100D0A;padding:34px 52px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;
+  border-top:1px solid rgba(247,240,227,.05);
+}
+.f-logo{font-family:'Cormorant Garamond',serif;font-size:1.38rem;font-weight:300;letter-spacing:.1em;color:var(--cream)}
+.f-copy{font-size:.6rem;letter-spacing:.14em;color:var(--smoke);text-align:center}
+.f-soc{display:flex;gap:18px}
+.f-soc a{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--smoke);text-decoration:none;transition:color .2s}
+.f-soc a:hover{color:var(--cream)}
+
+/* FADE-IN */
+.fade-in{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}
+.fade-in.vis{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:860px){
+  nav{padding:16px 20px}
+  nav.scrolled{padding:12px 20px}
+  .nav-links{display:none}
+  #hero-info{left:20px;right:20px;bottom:34px;gap:20px}
+  .about{grid-template-columns:1fr;padding:56px 20px;gap:26px}
+  .gallery{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .gallery-item:first-child{grid-row:auto}
+  .gallery-item{height:200px}
+  .menu{padding:60px 20px}
+  .menu-grid{grid-template-columns:1fr}
+  .visit{grid-template-columns:1fr;padding:60px 20px;gap:36px}
+  .cta-band{padding:52px 20px}
+  footer{flex-direction:column;padding:26px 20px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- DEMO BANNER -->
+<div class="demo-banner">
+  ✦ Site démo — Ce que je peux créer pour votre établissement &nbsp;·&nbsp; <strong>Contactez-moi pour un devis</strong>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">BIGA</a>
+  <ul class="nav-links">
+    <li><a href="#menu">Carte</a></li>
+    <li><a href="#visit">Trouver</a></li>
+    <li><a href="tel:0558421075">Contact</a></li>
+  </ul>
+  <a href="tel:0558421075" class="nav-cta">Appeler</a>
+</nav>
+
+<!-- ══ HERO ══ -->
+<div id="hero-wrapper">
+  <div id="hero-bg"></div>
+
+  <div id="hero-title">
+    <span class="title-big" id="word-top">BIGA</span>
+    <span class="title-sub" id="word-sub">Pizzeria Napolitaine · Capbreton</span>
+  </div>
+
+  <div id="hero-media">
+    <img
+      src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=1280&auto=format&fit=crop&q=85"
+      alt="Pizza napolitaine BIGA Capbreton"
+      draggable="false"
+    />
+    <div id="hero-media-overlay"></div>
+  </div>
+
+  <div class="scroll-hint" id="scroll-hint">
+    <div class="scroll-hint-line"></div>
+    <span class="scroll-hint-txt">Défiler</span>
+  </div>
+
+  <div id="hero-info" style="opacity:0;transform:translateY(10px)">
+    <div>
+      <div class="chip-lbl">Horaires</div>
+      <div class="chip-val">Mer–Dim · 19h–22h</div>
+    </div>
+    <div>
+      <div class="chip-lbl">Adresse</div>
+      <div class="chip-val">
+        <a href="https://maps.google.com/?q=5+Av+Maurice+Martin+Capbreton" target="_blank">
+          5 Av. Maurice Martin, Capbreton
+        </a>
+      </div>
+    </div>
+    <div>
+      <div class="chip-lbl">Téléphone</div>
+      <div class="chip-val"><a href="tel:0558421075">05.58.42.10.75</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE CONTENT ══ -->
+<div id="page-content">
+
+  <!-- ABOUT -->
+  <section class="about">
+    <div class="fade-in">
+      <p class="sec-label">Notre philosophie</p>
+      <h2 class="about-heading">
+        L'art de la pizza<br><em>napolitaine</em><br>depuis Naples
+      </h2>
+    </div>
+    <div class="fade-in" style="transition-delay:.12s">
+      <p class="about-text">
+        Au cœur de Capbreton, BIGA est bien plus qu'une pizzeria — c'est un voyage.
+        Chaque pâte est fermentée avec soin pour développer des arômes complexes : fine, souple, aérienne.
+        Tomates San Marzano, burrata crémeuse, charcuteries d'exception — chaque bouchée
+        transporte directement dans le sud de l'Italie.
+      </p>
+      <p class="about-text">
+        L'équipe passionnée de BIGA transforme chaque commande en rituel culinaire.
+        Accueil chaleureux, gestes précis, produits soigneusement sélectionnés —
+        une adresse incontournable des Landes pour les amoureux de la vraie pizza napolitaine.
+      </p>
+      <div class="badges">
+        <span class="badge">Pâte longue fermentation</span>
+        <span class="badge">Ingrédients d'origine</span>
+        <span class="badge">À emporter</span>
+        <span class="badge">Artisanat napolitain</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <div class="gallery">
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=900&auto=format&fit=crop&q=82" alt="Pizza napolitaine"/>
+      <span class="g-label">Pizza napolitaine</span>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&auto=format&fit=crop&q=80" alt="Four à pizza"/>
+      <span class="g-label">Four à bois</span>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1528137871618-79d2761e3fd5?w=800&auto=format&fit=crop&q=80" alt="Ingrédients"/>
+      <span class="g-label">Ingrédients sélectionnés</span>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=800&auto=format&fit=crop&q=80" alt="Burrata"/>
+      <span class="g-label">Burrata &amp; San Marzano</span>
+    </div>
+    <div class="gallery-item">
+      <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80" alt="Ambiance"/>
+      <span class="g-label">Capbreton, Landes</span>
+    </div>
+  </div>
+
+  <!-- MENU -->
+  <section class="menu" id="menu">
+    <div class="sec-head">
+      <div>
+        <p class="sec-label">Ce qu'on prépare</p>
+        <h2 class="sec-title">Nos spécialités</h2>
+      </div>
+      <a href="#" class="sec-link">Voir la carte</a>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-card fade-in">
+        <span class="m-icon">🍕</span>
+        <div class="m-name">Parma Double</div>
+        <div class="m-tag">Signature</div>
+        <p class="m-desc">San Marzano, jambon de Parme, burrata onctueuse, roquette fraîche. L'équilibre parfait entre tradition et élégance.</p>
+      </div>
+      <div class="menu-card fade-in" style="transition-delay:.1s">
+        <span class="m-icon">🫙</span>
+        <div class="m-name">Antipasti</div>
+        <div class="m-tag">Pour commencer</div>
+        <p class="m-desc">Focaccia maison dorée, bruschetta garnie de stracciatella et tomates séchées — mise en bouche authentiquement italienne.</p>
+      </div>
+      <div class="menu-card fade-in" style="transition-delay:.2s">
+        <span class="m-icon">🍮</span>
+        <div class="m-name">Tiramisu Pizzeta</div>
+        <div class="m-tag">Dessert</div>
+        <p class="m-desc">Une touche sucrée pour finir en beauté. Le tiramisu réinventé en pizzeta — gourmand, authentique, inoubliable.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section class="visit" id="visit">
+    <div class="fade-in">
+      <h2 class="visit-heading">Nous<br><em>trouver</em><br>à Capbreton</h2>
+      <ul class="info-list">
+        <li class="info-row">
+          <div class="i-icon">📍</div>
+          <div>
+            <div class="i-lbl">Adresse</div>
+            <div class="i-val">
+              <a href="https://maps.google.com/?q=5+Av+Maurice+Martin+Capbreton" target="_blank">
+                5 Av. Maurice Martin<br>40130 Capbreton, Landes
+              </a>
+            </div>
+          </div>
+        </li>
+        <li class="info-row">
+          <div class="i-icon">⏰</div>
+          <div>
+            <div class="i-lbl">Horaires</div>
+            <div class="i-val">Mercredi au Dimanche<br>19h00 – 22h00</div>
+          </div>
+        </li>
+        <li class="info-row">
+          <div class="i-icon">📞</div>
+          <div>
+            <div class="i-lbl">Téléphone</div>
+            <div class="i-val"><a href="tel:0558421075">05.58.42.10.75</a></div>
+          </div>
+        </li>
+        <li class="info-row">
+          <div class="i-icon">🛎️</div>
+          <div>
+            <div class="i-lbl">Service</div>
+            <div class="i-val">À emporter</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="fade-in" style="transition-delay:.12s">
+      <iframe
+        class="visit-map"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2806.2!2d-1.4490!3d43.6650!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd515b19116e8cd7%3A0xc18b383ed0d9f61f!2s5%20Av.%20Maurice%20Martin%2C%2040130%20Capbreton!5e0!3m2!1sfr!2sfr!4v1"
+        allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Carte BIGA Pizzeria"
+      ></iframe>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-band fade-in">
+    <h2 class="cta-heading">Prêt pour une soirée<br><em>napolitaine ?</em></h2>
+    <div class="cta-btns">
+      <a href="tel:0558421075" class="btn-w">Appeler maintenant</a>
+      <a href="https://maps.google.com/?q=5+Av+Maurice+Martin+Capbreton" target="_blank" class="btn-o">Itinéraire</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="f-logo">BIGA</div>
+    <div class="f-copy">
+      © 2025 BIGA Pizzeria Napolitaine — Capbreton, Landes<br>
+      <span style="opacity:.4">Site démo — réalisé par [Votre nom]</span>
+    </div>
+    <div class="f-soc">
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+      <a href="tel:0558421075">Appeler</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var wrapper=document.getElementById('hero-wrapper'),
+      media=document.getElementById('hero-media'),
+      overlay=document.getElementById('hero-media-overlay'),
+      bg=document.getElementById('hero-bg'),
+      wordTop=document.getElementById('word-top'),
+      wordSub=document.getElementById('word-sub'),
+      hint=document.getElementById('scroll-hint'),
+      info=document.getElementById('hero-info'),
+      page=document.getElementById('page-content');
+
+  var progress=0, expanded=false, touchY0=0;
+  var mobile=window.innerWidth<768;
+  window.addEventListener('resize',function(){mobile=window.innerWidth<768});
+
+  function apply(p){
+    var wBase=300,wRange=mobile?600:1300;
+    var hBase=375,hRange=mobile?220:430;
+    var w=Math.min(wBase+p*wRange,window.innerWidth);
+    var h=Math.min(hBase+p*hRange,window.innerHeight);
+    media.style.width=w+'px';
+    media.style.height=h+'px';
+    media.style.borderRadius=Math.max(20*(1-p*1.5),0)+'px';
+    overlay.style.opacity=Math.max(.42-p*.42,0);
+    bg.style.opacity=Math.max(1-p*1.2,0);
+    var shift=p*(mobile?26:20);
+    wordTop.style.transform='translateX(-'+shift+'vw)';
+    wordSub.style.opacity=Math.max(1-p*3,0);
+    hint.style.opacity=Math.max(1-p*5,0);
+    var io=Math.max((p-.62)/.38,0);
+    info.style.opacity=io;
+    info.style.transform='translateY('+(1-io)*10+'px)';
+  }
+
+  function finish(){
+    expanded=true;progress=1;apply(1);
+    page.classList.add('visible');
+    setupObserver();
+  }
+
+  function collapse(){
+    expanded=false;
+    page.classList.remove('visible');
+    var from=progress,start=null;
+    (function step(ts){
+      if(!start)start=ts;
+      var t=Math.min((ts-start)/380,1);
+      progress=from*(1-t);
+      apply(progress);
+      if(t<1)requestAnimationFrame(step);
+    })(performance.now());
+  }
+
+  apply(0);
+
+  window.addEventListener('wheel',function(e){
+    if(expanded){
+      if(e.deltaY<0&&window.scrollY<=2)collapse();
+      return;
+    }
+    e.preventDefault();
+    progress=Math.min(Math.max(progress+e.deltaY*.0012,0),1);
+    apply(progress);
+    if(progress>=1)finish();
+    else if(progress<.72)page.classList.remove('visible');
+  },{passive:false});
+
+  window.addEventListener('touchstart',function(e){touchY0=e.touches[0].clientY},{passive:false});
+  window.addEventListener('touchmove',function(e){
+    if(!touchY0)return;
+    var dy=touchY0-e.touches[0].clientY;
+    if(expanded){if(dy<-18&&window.scrollY<=2)collapse();return;}
+    e.preventDefault();
+    progress=Math.min(Math.max(progress+dy*(dy<0?.009:.006),0),1);
+    apply(progress);
+    if(progress>=1)finish();
+    else if(progress<.72)page.classList.remove('visible');
+    touchY0=e.touches[0].clientY;
+  },{passive:false});
+  window.addEventListener('touchend',function(){touchY0=0});
+
+  window.addEventListener('scroll',function(){if(!expanded)window.scrollTo(0,0)});
+
+  /* Nav */
+  var nav=document.getElementById('nav');
+  window.addEventListener('scroll',function(){
+    nav.classList.toggle('scrolled',window.scrollY>60);
+  });
+
+  /* Intersection fade-ins */
+  function setupObserver(){
+    var els=document.querySelectorAll('.fade-in');
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){en.target.classList.add('vis');obs.unobserve(en.target);}
+      });
+    },{threshold:.14});
+    els.forEach(function(el){obs.observe(el);});
+  }
+})();
+</script>
+</body>
+</html>
